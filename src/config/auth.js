@@ -1,9 +1,9 @@
-const { validateToken } = require('../services/authentication.sevice');
+const { validateToken } = require('../middleware/validate');
 
 function checkAuth(req, res, next) {
   const token = req.cookies.authToken; 
   if (!token) {
-      return res.redirect('/Login'); 
+    return validationErrorResponse(res,error,"Please Register First",400)
   }
 
   try {
@@ -12,7 +12,7 @@ function checkAuth(req, res, next) {
       next(); 
   } catch (error) {
       console.log('Invalid token:', error.message);
-      return res.redirect('/Login');
+      return validationErrorResponse(res,error,"Something Wrong",400)
   }
 }
 
