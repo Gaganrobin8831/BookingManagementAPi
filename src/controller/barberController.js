@@ -34,37 +34,83 @@ async function HandleNewBarber(req,res) {
 }
 
 
-async function HandleBookingStatusUpdate(req,res) {
-  const {user,barberName,status,day} = req.body
+// async function HandleBookingStatusUpdate(req,res) {
+//   const {user,barberName,status,day} = req.body
+//   try {
+//     const userDetail = await User.findOne({FullName:user})
+    
+
+//     if (!userDetail) {
+//       return validationErrorResponse(res,"Enter Valid User Name ","User name is wrong")
+//     }
+
+//     const userId = userDetail._id
+
+//     const baraberDetail = await barber.findOne({FullName:barberName})
+//     if (!baraberDetail) {
+//       return validationErrorResponse(res,"Enter Valid Barber Name ","Barber Name is wrong")
+//     }
+//     const barberId = baraberDetail._id
+
+//     const checkBooking = await Booking.find({barberId,userId,day})
+//     console.log(checkBooking);
+//     if (!checkBooking) {
+//       return validationErrorResponse(res,"Something Went Wrong","User Have not Booking One this Day with Barber",400)
+//     }
+    
+//       if (checkBooking.action !== "Reject" && checkBooking.action === "Pending") {
+//         checkBooking.action = status
+//       }
+
+//       await checkBooking.save()
+//     return successResponse(res,checkBooking,"Success",200)
+//   } catch (error) {
+//     console.log(error);
+//     return validationErrorResponse(res,error,"Something Wrong",400)
+//   }
+// }
+
+async function HandleBookingStatusUpdate(req, res) {
+  const { user, barberName, status, day } = req.body;
+
   try {
-    const userDetail = await User.findOne({FullName:user})
     
-
+    const userDetail = await User.findOne({ FullName: user });
     if (!userDetail) {
-      return validationErrorResponse(res,"Enter Valid User Name ","User name is wrong")
+      return validationErrorResponse(res, "Enter Valid User Name", "User name is wrong");
+    }
+    const userId = userDetail._id;
+
+ 
+    const barberDetail = await barber.findOne({ FullName: barberName });
+    if (!barberDetail) {
+      return validationErrorResponse(res, "Enter Valid Barber Name", "Barber Name is wrong");
+    }
+    const barberId = barberDetail._id;
+
+   
+    const bookings = await Booking.find({ barberId, userId, day });
+    if (bookings.length === 0) {
+      return validationErrorResponse(res, "Something Went Wrong", "User does not have any bookings with this barber on this day", 400);
     }
 
-    const userId = userDetail._id
-
-    const baraberDetail = await barber.findOne({FullName:barberName})
-    if (!baraberDetail) {
-      return validationErrorResponse(res,"Enter Valid Barber Name ","Barber Name is wrong")
+    let updatedBooking;
+    for (const booking of bookings) {
+      if (booking.action === "Pending") {
+        booking.action = status;
+        updatedBooking = await booking.save();
+        break; 
+      }
     }
-    const barberId = baraberDetail._id
 
-    const checkBooking = await Booking.findOne({barberId,userId,day})
-    console.log(checkBooking);
-    if (!checkBooking) {
-      return validationErrorResponse(res,"Something Went Wrong","User Have not Booking One this Day with Barber",400)
+    if (updatedBooking) {
+      return successResponse(res, updatedBooking, "Booking status updated successfully", 200);
+    } else {
+      return validationErrorResponse(res, "Invalid Action", "No pending booking found to update or booking is in 'Reject' status", 400);
     }
-    
-      checkBooking.action = status
-
-      await checkBooking.save()
-    return successResponse(res,checkBooking,"Success",200)
   } catch (error) {
-    console.log(error);
-    return validationErrorResponse(res,error,"Something Wrong",400)
+    console.error(error);
+    return validationErrorResponse(res, error, "Something went wrong", 400);
   }
 }
 module.exports = {
