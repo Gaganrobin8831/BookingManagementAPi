@@ -43,6 +43,7 @@ async function BookingForBarber(req, res) {
     const overlappingBooking = await Booking.findOne({
       barberId,
       day,
+      action:{$in:["Accept","Pending"]},
       $or: [
         {
           $and: [
