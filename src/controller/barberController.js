@@ -52,7 +52,7 @@ async function HandleBookingStatusUpdate(req,res) {
     }
     const barberId = baraberDetail._id
 
-    const checkBooking = await Booking.findOne({barberId,userId})
+    const checkBooking = await Booking.findOne({barberId,userId,day})
     console.log(checkBooking);
     if (!checkBooking) {
       return validationErrorResponse(res,"Something Went Wrong","You have not booking With This Barber on this day",400)
