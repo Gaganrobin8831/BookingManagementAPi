@@ -21,8 +21,8 @@ const BookingSchema = new mongoose.Schema({
     },
     action: {
         type: String,
-        enum: ["Accept", "Reject"],
-        default: "Reject"
+        enum: ["Accept", "Reject","Pending"],
+        default: "Pending"
     }
 }, { timestamps: true });
 
