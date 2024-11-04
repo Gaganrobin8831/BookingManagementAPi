@@ -55,7 +55,7 @@ async function HandleBookingStatusUpdate(req,res) {
     const checkBooking = await Booking.findOne({barberId,userId,day})
     console.log(checkBooking);
     if (!checkBooking) {
-      return validationErrorResponse(res,"Something Went Wrong","You have not booking With This Barber on this day",400)
+      return validationErrorResponse(res,"Something Went Wrong","User Have not Booking One this Day with Barber",400)
     }
     
       checkBooking.action = status
