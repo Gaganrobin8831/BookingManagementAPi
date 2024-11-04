@@ -23,6 +23,12 @@ const BookingSchema = new mongoose.Schema({
         type: String,
         enum: ["Accept", "Reject","Pending"],
         default: "Pending"
+    },
+    day: {
+        type: String,
+        enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+        required: true
+    
     }
 }, { timestamps: true });
 
