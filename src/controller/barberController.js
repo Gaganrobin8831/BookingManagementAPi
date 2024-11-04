@@ -71,7 +71,7 @@ async function HandleBookingStatusUpdate(req, res) {
     if (updatedBooking) {
       return successResponse(res, updatedBooking, "Booking status updated successfully", 200);
     } else {
-      return validationErrorResponse(res, "Invalid Action", "No pending booking found to update or booking is in 'Reject' status", 400);
+      return validationErrorResponse(res, "Invalid Action", "No pending booking found to update or booking is status", 400);
     }
   } catch (error) {
     console.error(error);
